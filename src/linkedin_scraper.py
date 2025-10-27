@@ -1,18 +1,20 @@
 # src/scraper.py
 import os
+import pickle
 import re
 from linkedin_api import Linkedin
+SESSION_FILE = "creds/linkedin_session.pkl"
 
 def get_linkedin_api(username, password):
     # Try loading saved session
     if os.path.exists(SESSION_FILE):
-        with open(SESSION_FILE, "rb") as f:
-            api = pickle.load(f)
-            try:
-                api.get_profile("me")  # test if session still valid
-                return api
-            except Exception:
-                print("Saved session expired. Logging in again...")
+        try:
+            with open(SESSION_FILE, "rb") as f:
+                api = pickle.load(f)
+            api.get_profile("me")  # test if session still valid
+            return api
+        except Exception:
+            print("Saved session expired or session file corrupted. Logging in again...")
 
     # If no valid session, login with username/password
     api = Linkedin(username, password)
@@ -26,7 +28,8 @@ def get_linkedin_api(username, password):
 username = os.getenv('LINKEDIN_USERNAME')
 password = os.getenv('LINKEDIN_PASSWORD')
 if not username or not password:
-    raise ValueError("LinkedIn credentials not set in environment variables.")
+    print("LinkedIn credentials not set. Please edit your .env file.")
+    exit(1)
 api = get_linkedin_api(username, password)
 
 def extract_job_id_from_url(url: str) -> str:
