@@ -21,7 +21,7 @@ class DataValidationError(Exception):
 
 # Path to credentials.json relative to project root
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CREDS_PATH = os.path.join(BASE_DIR, "creds", "sa-credentials.json")
+CREDS_PATH = os.path.join(BASE_DIR, "creds", "credentials.json")
 
 class SheetManager:
     """

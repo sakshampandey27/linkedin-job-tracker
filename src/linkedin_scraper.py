@@ -1,5 +1,5 @@
 # src/scraper.py
-import pickle
+import os
 import re
 from linkedin_api import Linkedin
 
@@ -22,8 +22,12 @@ def get_linkedin_api(username, password):
         pickle.dump(api, f)
     return api
 
-# Authenticate your LinkedIn account (use local credentials)
-api = get_linkedin_api('username', 'password')  # Replace with your LinkedIn login
+# Authenticate your LinkedIn account using environment variables
+username = os.getenv('LINKEDIN_USERNAME')
+password = os.getenv('LINKEDIN_PASSWORD')
+if not username or not password:
+    raise ValueError("LinkedIn credentials not set in environment variables.")
+api = get_linkedin_api(username, password)
 
 def extract_job_id_from_url(url: str) -> str:
     """
